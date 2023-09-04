@@ -1,6 +1,7 @@
 package com.ethdc.user.role.service.api;
 
 import com.ethdc.user.role.service.model.UserRole;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.stream.IntStream;
  */
 @RestController
 @RequestMapping("/user/role")
+@Slf4j
 public class UserRolesApi {
 
     private static final Map<Integer, UserRole> USER_ROLE_MAP = new ConcurrentHashMap<>(1);
@@ -46,7 +48,7 @@ public class UserRolesApi {
      */
     @GetMapping("/")
     public Flux<UserRole> getAll() {
-       return Flux.fromIterable(USER_ROLE_MAP.values());
+        return Flux.fromIterable(USER_ROLE_MAP.values());
     }
 
     /**
@@ -68,10 +70,11 @@ public class UserRolesApi {
      */
     @GetMapping("/user/{id}")
     public Mono<UserRole> getByUserId(@PathVariable Integer id) {
+        log.info("UserRolesApi::getByUserId({})", id);
         return Mono.just(USER_ROLE_MAP.values()
-                .stream()
-                .filter(userRole -> userRole.userId().equals(id))
-                .findFirst())
+                        .stream()
+                        .filter(userRole -> userRole.userId().equals(id))
+                        .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get);
     }
